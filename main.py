@@ -7,8 +7,8 @@ from package.components.extract_worker import ExtractWorker
 from package.api.apis import ServiceWorker
 
 if __name__ == '__main__':
-    # worker = ExtractWorker(ExtractConfigs.url, ExtractConfigs.html_cols, SqlConfigs.db_name, SqlConfigs.insert_params)
-    # worker.doWork()
+    worker = ExtractWorker(ExtractConfigs.url, ExtractConfigs.html_cols, SqlConfigs.db_name, SqlConfigs.insert_params)
+    worker.doWork()
 
-    serviceWorker = ServiceWorker()
-    serviceWorker.startService()
+    # serviceWorker = ServiceWorker()
+    # serviceWorker.startService()

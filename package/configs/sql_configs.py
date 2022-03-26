@@ -1,12 +1,13 @@
 class SqlConfigs(object):
     db_name = 'forward_rate'
     insert_params = ['date', 'libor_rate', 'sofr_rate']
+    query_cols = ['date', 'libor_rate', 'sofr_rate', 'diff']
 
     create_table='''
         CREATE TABLE IF NOT EXISTS rates
         (
             [date] TEXT UNIQUE PRIMARY KEY, 
-            [libor_rate] TEXT, 
+            [libor_rate] NUMERIC, 
             [sofr_rate] NUMERIC
         )
     '''
