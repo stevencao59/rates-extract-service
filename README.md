@@ -100,6 +100,11 @@ python3 main_extract.py
 
 * All rates data is saved in forward_date sqllite db in project root folder. You can use any SQLite DB browser to open the db and check data.
 
+* If you encounter error "ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate" during extraction, please run the following batch with sudo:
+```
+sudo /Applications/Python\ 3.8/Install\ Certificates.command Install Certificate.command
+```
+
 ![sqlite]
 
  ### Rest Service

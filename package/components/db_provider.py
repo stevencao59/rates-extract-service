@@ -40,7 +40,6 @@ class DbProvider(object):
     def insertOrUpdateItems(self, *args, **kwargs):
         items, select_param, insert_params, update_params = args
         for item in items:
-            self.logger.info(f'Updating item {Utilities.generateParam(item, insert_params)}')
             sel = self.selectItem(item, select_param)
             if sel:
                 self.updateItem(item, update_params)
