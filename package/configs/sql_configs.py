@@ -1,6 +1,8 @@
 class SqlConfigs(object):
     db_name = 'forward_rate'
+    select_params = ['date']
     insert_params = ['date', 'libor_rate', 'sofr_rate']
+    update_params = ['libor_rate', 'sofr_rate', 'date']
     query_cols = ['date', 'libor_rate', 'sofr_rate', 'diff']
 
     create_table='''
@@ -12,8 +14,17 @@ class SqlConfigs(object):
         )
     '''
 
+    select_items='''
+        SELECT date, libor_rate, sofr_rate FROM rates WHERE date=?
+    '''
+
     insert_items='''
         INSERT OR IGNORE INTO rates (date, libor_rate, sofr_rate) VALUES(?, ?, ?)
+        
+    '''
+
+    update_items='''
+        UPDATE rates SET libor_rate=?, sofr_rate=? WHERE date=?
     '''
 
     get_items='''

@@ -1,12 +1,10 @@
 import traceback
-import logging
 import sqlite3
 from ..configs.sql_configs import SqlConfigs
-
-logger=logging.getLogger(__name__)
-
+from .utilities import Utilities
 class DbProvider(object):
     def __init__(self, *args, **kwargs):
+        self.logger = Utilities.createLogger(__name__)
         [self.db_name,] = args
 
     def __enter__(self):
@@ -22,15 +20,16 @@ class DbProvider(object):
                 f(self, *args, **kwargs)
                 self.conn.commit()
             except:
-                logger.error(f'Error occurred while executing query! {traceback.format_exc()}')
+                self.logger.error(f'Error occurred while executing query! {traceback.format_exc()}')
         return func
 
     def getQuery(f):
         def func(self, *args, **kwargs):
             try:
-                return f(self, *args, **kwargs)
+                res = f(self, *args, **kwargs)
+                return res
             except:
-                logger.error(f'Error occurred while running get query! {traceback.format_exc()}')
+                self.logger.error(f'Error occurred while running get query! {traceback.format_exc()}')
         return func
 
     @executeQuery
@@ -38,16 +37,29 @@ class DbProvider(object):
         self.conn.execute(SqlConfigs.create_table)                            
 
     @executeQuery
-    def insertItems(self, *args, **kwargs):
-        items, insert_params = args
+    def insertOrUpdateItems(self, *args, **kwargs):
+        items, select_param, insert_params, update_params = args
         for item in items:
-            insertList = [getattr(item, field) for field in insert_params]
-            self.insertItem(insertList)
+            self.logger.info(f'Updating item {Utilities.generateParam(item, insert_params)}')
+            sel = self.selectItem(item, select_param)
+            if sel:
+                self.updateItem(item, update_params)
+            else:
+                self.insertItem(item, insert_params)
+
+    @getQuery
+    def selectItem(self, *args, **kwargs):
+        cur = self.conn.cursor()
+        cur.execute(SqlConfigs.select_items, Utilities.generateParam(*args))
+        return cur.fetchall()
 
     @executeQuery
     def insertItem(self, *args, **kwargs):
-        [item,] = args
-        self.conn.execute(SqlConfigs.insert_items, item)
+        self.conn.execute(SqlConfigs.insert_items, Utilities.generateParam(*args))
+
+    @executeQuery
+    def updateItem(self, *args, **kwargs):
+        self.conn.execute(SqlConfigs.update_items, Utilities.generateParam(*args))
 
     @getQuery
     def getItems(self, *args, **kwargs):

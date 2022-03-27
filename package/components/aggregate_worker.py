@@ -1,8 +1,5 @@
-import logging
 from .db_provider import DbProvider
 from ..configs.sql_configs import SqlConfigs
-
-logger=logging.getLogger(__name__)
 
 class AggregateWorker(object):
     def __init__(self, db_name):
